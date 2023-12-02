@@ -1,5 +1,6 @@
 
 using Vezeta.Application.Common.Interfaces.Authentication;
+using Vezeta.Application.Common.Interfaces.Errors;
 using Vezeta.Application.Common.Interfaces.Persistance;
 using Vezeta.Domain.Entities;
 
@@ -23,7 +24,7 @@ public class AuthenticationService : IAuthenticationService
 
         if(user != null)
         {
-            throw new Exception("User already exists");
+            throw new DuplicateEmailException();
         }
 
         //Create user (unique id)
