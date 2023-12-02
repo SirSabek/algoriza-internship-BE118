@@ -1,34 +1,74 @@
 
 using Vezeta.Application.Common.Interfaces.Authentication;
+using Vezeta.Application.Common.Interfaces.Persistance;
+using Vezeta.Domain.Entities;
 
 namespace Vezeta.Application.Services.Authentication;
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IUserRepository _userRepository;
 
-    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator)
+    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository)
     {
         _jwtTokenGenerator = jwtTokenGenerator;
+        _userRepository = userRepository;
     }
 
-    public Task<AuthenticationResult> RegisterAsync(string firstName, string lastName, string email, string password)
+    public async Task<AuthenticationResult> RegisterAsync(string firstName, string lastName, string email, string password)
     {
         // check if user already exists
+        var user = await _userRepository.GetUserByEmailAsync(email);
+
+        if(user != null)
+        {
+            throw new Exception("User already exists");
+        }
 
         //Create user (unique id)
+        user = new User
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Password = password
+        };
+
+        //Save user to database
+        await _userRepository.CreateUserAsync(user);
 
         //Generate jwt token
-        Guid userId = Guid.NewGuid();
+        var generatedToken = _jwtTokenGenerator.GenerateToken(user);
 
-        var generatedToken = _jwtTokenGenerator.GenerateToken(userId, firstName, lastName);
-
-        return Task.FromResult(new AuthenticationResult(userId, firstName, lastName, email, generatedToken));
+        return await Task.FromResult(new AuthenticationResult(
+            user,
+            generatedToken));
     }
 
-    public Task<AuthenticationResult> LoginAsync(string email, string password)
+    public async Task<AuthenticationResult> LoginAsync(string email, string password)
     {
-        return Task.FromResult(new AuthenticationResult(Guid.NewGuid(), "John", "Doe", email, "token"));
+        // check if user exists
+        var user = await _userRepository.GetUserByEmailAsync(email);
+
+        if(user == null)
+        {
+            throw new Exception("User does not exist");
+        }
+
+        // check if password is correct
+        if(user.Password != password)
+        {
+            throw new Exception("Password is incorrect");
+        }
+
+        //Generate jwt token
+        var generatedToken = _jwtTokenGenerator.GenerateToken(user);
+
+
+        return await Task.FromResult(new AuthenticationResult(
+            user,
+            generatedToken));
     }
 
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Vezeta.Application.Common.Interfaces.Authentication;
 using Vezeta.Application.Common.Interfaces.Services;
+using Vezeta.Domain.Entities;
 
 namespace Vezeta.Infrastructure.Authentication
 {
@@ -19,7 +20,7 @@ namespace Vezeta.Infrastructure.Authentication
             _jwtSettings = jwtOptions.Value;
         }
 
-        public string GenerateToken(Guid userId, string firstName, string lastName)
+        public string GenerateToken(User user)
         {
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
@@ -28,9 +29,9 @@ namespace Vezeta.Infrastructure.Authentication
             
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim(JwtRegisteredClaimNames.GivenName, $"{firstName}"),
-                new Claim(JwtRegisteredClaimNames.FamilyName, $"{lastName}"),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.GivenName, $"{user.FirstName}"),
+                new Claim(JwtRegisteredClaimNames.FamilyName, $"{user.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
