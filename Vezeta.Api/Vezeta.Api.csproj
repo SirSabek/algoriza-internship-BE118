@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b8989ef7-857f-40b1-85b4-e3a573402764</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.14" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vezeta.Contracts\Vezeta.Contracts.csproj" />
+    <ProjectReference Include="..\Vezeta.Application\Vezeta.Application.csproj" />
+    <ProjectReference Include="..\Vezeta.Infrastructure\Vezeta.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
