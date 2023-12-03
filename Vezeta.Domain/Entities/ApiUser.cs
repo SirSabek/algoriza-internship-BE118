@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace Vezeta.Domain.Entities;
-public class ApiUser: IdentityUser<int>
+public class User: IdentityUser<int>
 {
     public int Id { get; set; }
     public string FirstName { get; set; } = null!;

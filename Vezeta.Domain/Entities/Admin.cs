@@ -2,6 +2,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Vezeta.Domain.Entities;
 
-public class Admin: ApiUser
+public class Admin: User
 {}
 
