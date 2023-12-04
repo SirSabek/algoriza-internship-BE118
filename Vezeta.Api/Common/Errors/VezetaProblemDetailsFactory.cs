@@ -73,6 +73,19 @@ public class VezetaProblemDetailsFactory : ProblemDetailsFactory
         string? detail = null, 
         string? instance = null)
     {
-        throw new NotImplementedException();
+        var problemDetails = new ValidationProblemDetails(modelStateDictionary)
+        {
+            Type = type,
+            Detail = detail,
+            Instance = instance
+        };
+
+        if(title != null)
+        {
+            problemDetails.Title = title;
+        }
+
+        ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode ?? 400);
+        return problemDetails;
     }
 }
