@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Identity;
 using Vezeta.Application.Common.Interfaces.Authentication;
 using Vezeta.Application.Common.Interfaces.Errors;
 using Vezeta.Application.Common.Interfaces.Persistance;
@@ -10,17 +11,20 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IUserRepository _userRepository;
+    private readonly UserManager<User> _userManager;
 
-    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository)
+    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository, UserManager<User> userManager)
     {
         _jwtTokenGenerator = jwtTokenGenerator;
         _userRepository = userRepository;
+        _userManager = userManager;
     }
 
     public async Task<AuthenticationResult> RegisterAsync(string firstName, string lastName, string email, string password)
     {
         // check if user already exists
-        var user = await _userRepository.GetUserByEmailAsync(email);
+        //var user = await _userRepository.GetUserByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
 
         if(user != null)
         {
@@ -32,8 +36,8 @@ public class AuthenticationService : IAuthenticationService
         {
             FirstName = firstName,
             LastName = lastName,
-            Email = email,
-            Password = password
+            Email = email
+            
         };
 
         //Save user to database
@@ -58,10 +62,10 @@ public class AuthenticationService : IAuthenticationService
         }
 
         // check if password is correct
-        if(user.Password != password)
-        {
-            throw new Exception("Password is incorrect");
-        }
+        // if(user.Password != password)
+        // {
+        //     throw new Exception("Password is incorrect");
+        // }
 
         //Generate jwt token
         var generatedToken = _jwtTokenGenerator.GenerateToken(user);
