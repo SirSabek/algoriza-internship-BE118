@@ -120,7 +120,7 @@ $RECYCLE.BIN/
 # VS Code directories
 .vscode/
 requests/
-
+Migrations/
 # Windows Installer files
 *.cab
 *.msi
