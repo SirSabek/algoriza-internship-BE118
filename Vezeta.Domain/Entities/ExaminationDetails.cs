@@ -3,7 +3,7 @@ using Vezeta.Domain.Enums;
 
 namespace Vezeta.Domain.Entities;
 
-public class ExaminationDetails 
+public class ExaminationDetails
 {
     public int Id { get; set; }
     [ForeignKey(nameof(Doctor))]
