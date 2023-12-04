@@ -10,8 +10,9 @@ public class ExaminationDetails
     public int DoctorId { get; set; }
     public Doctor Doctor { get; set; } = null!;
     public int Price { get; set; }
-    [NotMapped]
-    public ICollection<WorkingDays> WorkingDays { get; set; } = null!;
+
+    // update these two to be a list of objects
+    public string WorkingDays { get; set; } = null!; // "sat, sun, mon"
     public string WorkingHours { get; set; } = null!; // "from 10:00 to 12:00"
 
 }
