@@ -6,6 +6,9 @@ using Vezeta.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Vezeta.Application.Common.Interfaces.Persistance;
 using Vezeta.Infrastructure.Persistance;
+using Microsoft.EntityFrameworkCore;
+using Vezeta.Infrastructure.Repositories.Persistance;
+using Microsoft.AspNetCore.Identity;
 
 namespace Vezeta.Infrastructure;
 
@@ -19,6 +22,16 @@ public static class DependencyInjection
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUnitOfWork, UniteOfWork>();
+
+        services.AddDbContext<VezetaDbContext>(options =>
+        {
+            options.UseSqlServer("Server=localhost;Database=Vezeta;User Id = SA; Password = Sabek@184; TrustServerCertificate=True;");
+        });
+        
+        services.AddIdentity<IdentityUser,IdentityRole>()
+        .AddEntityFrameworkStores<VezetaDbContext>();
+
         return services;
     }
 
