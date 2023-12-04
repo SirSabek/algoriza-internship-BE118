@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Vezeta.Api.Common.Errors;
+using Vezeta.Api.Configurations;
 using Vezeta.Application;
 using Vezeta.Infrastructure;
 
@@ -23,6 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
         });
     });
 
+    builder.Services.AddAutoMapper(typeof(MapperInitializer));
 
 }
 
