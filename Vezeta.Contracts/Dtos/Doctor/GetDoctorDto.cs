@@ -1,4 +1,4 @@
-namespace Vezeta.Contract.Dtos.Admin;
+namespace Vezeta.Contract.Dtos.Doctor;
 
 public class GetDoctorDto : BaseDoctorDto
 {

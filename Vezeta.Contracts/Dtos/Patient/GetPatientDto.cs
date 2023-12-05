@@ -1,7 +1,7 @@
 using Vezeta.Domain.Entities;
 using Vezeta.Domain.Enums;
 
-namespace Vezeta.Contract.Dtos.Admin
+namespace Vezeta.Contract.Dtos.Patient
 {
     public class GetPatientDto 
     {
