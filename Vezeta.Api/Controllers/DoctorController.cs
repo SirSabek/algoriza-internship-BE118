@@ -1,4 +1,7 @@
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vezeta.Application.Common;
 using Vezeta.Application.Common.Interfaces.Persistance;
@@ -14,11 +17,13 @@ public class DoctorController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly UserManager<Doctor> _userManager;
 
-    public DoctorController(IUnitOfWork unitOfWork, IMapper mapper)
+    public DoctorController(IUnitOfWork unitOfWork, IMapper mapper, UserManager<Doctor> userManager)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _userManager = userManager;
     }
 
 
@@ -42,16 +47,20 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> AddDoctor([FromBody] AddDoctorDto doctorDto)
     {
         var doctor = _mapper.Map<Doctor>(doctorDto);
-        await _unitOfWork.Doctors.Insert(doctor);
+        doctor.UserName = doctorDto.Email;
+        await _userManager.CreateAsync(doctor, doctorDto.Password);
         await _unitOfWork.Save();
-        //var result = _mapper.Map<GetDoctorDto>(doctor);
         return Ok(doctorDto);
     }
+    
+    [Authorize(Roles = "Doctor")]
 
     [HttpPut("id:int", Name ="UpdateDoctor")]
-    public async Task<IActionResult> UpdateDoctor(int id, [FromBody] UpdateDoctorDto doctorDto)
+    public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDto doctorDto)
     {
-        var doctor = await _unitOfWork.Doctors.Get(q => q.Id == id);
+        //extract id from token
+        var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+        var doctor = await _unitOfWork.Doctors.Get(q => q.Id == Convert.ToInt32(id), new List<string> { "Specialization" });
         doctor = _mapper.Map(doctorDto, doctor);
         _unitOfWork.Doctors.Update(doctor);
         await _unitOfWork.Save();
