@@ -11,20 +11,20 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IUserRepository _userRepository;
-    private readonly UserManager<User> _userManager;
+    //private readonly UserManager<User> _userManager;
 
-    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository, UserManager<User> userManager)
+    public AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository)
     {
         _jwtTokenGenerator = jwtTokenGenerator;
         _userRepository = userRepository;
-        _userManager = userManager;
+        //_userManager = userManager;
     }
 
     public async Task<AuthenticationResult> RegisterAsync(string firstName, string lastName, string email, string password)
     {
         // check if user already exists
-        //var user = await _userRepository.GetUserByEmailAsync(email);
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _userRepository.GetUserByEmailAsync(email);
+        //var user = await _userManager.FindByEmailAsync(email);
 
         if(user != null)
         {
