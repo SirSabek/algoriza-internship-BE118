@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Vezeta.Domain.Entities;
@@ -5,7 +6,7 @@ using Vezeta.Infrastructure.Configurations.Entities;
 
 namespace Vezeta.Infrastructure.Persistance;
 
-public class VezetaDbContext : IdentityDbContext 
+public class VezetaDbContext: IdentityDbContext<User, IdentityRole<int>, int> 
 {
     public VezetaDbContext(DbContextOptions<VezetaDbContext> options) : base(options)
     {
@@ -15,11 +16,16 @@ public class VezetaDbContext : IdentityDbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // seed data
+        modelBuilder.Entity<Admin>().ToTable("Admins");
+        modelBuilder.Entity<Patient>().ToTable("Patients");
+        modelBuilder.Entity<Doctor>().ToTable("Doctors");
+
+        // seeding data
         modelBuilder.ApplyConfiguration(new SpecializationConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new DoctorConfiguration());
         modelBuilder.ApplyConfiguration(new PatientConfiguration());
+      
     }
 
     public DbSet<Admin> Admins { get; set; } = null!;

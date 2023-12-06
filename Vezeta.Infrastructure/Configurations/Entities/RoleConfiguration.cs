@@ -4,25 +4,31 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Vezeta.Infrastructure.Configurations.Entities;
 
-public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
+public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole<int>>
 {
-    public void Configure(EntityTypeBuilder<IdentityRole> builder)
+    public void Configure(EntityTypeBuilder<IdentityRole<int>> builder)
     {
-         builder.HasData(
-            new IdentityRole
+        builder.ToTable("AspNetRoles");
+        builder.HasData(
+            new IdentityRole<int>
             {
-                Name = "Doctor",
-                NormalizedName = "DOCTOR"
+                Id = 1,
+                Name = "Admin",
+                NormalizedName = "ADMIN"
             },
-            new IdentityRole
+            new IdentityRole<int>
             {
+                Id = 2,
                 Name = "Patient",
                 NormalizedName = "PATIENT"
             },
-            new IdentityRole
+            new IdentityRole<int>
             {
-                Name = "Administrator",
-                NormalizedName = "ADMINISTRATOR"
-            });
+                Id = 3,
+                Name = "Doctor",
+                NormalizedName = "DOCTOR"
+            }
+        );
+       
     }
 }

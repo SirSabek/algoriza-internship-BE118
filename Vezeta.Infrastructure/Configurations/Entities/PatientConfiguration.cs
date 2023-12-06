@@ -13,7 +13,7 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
         builder.HasData(
         new Patient
         {
-            Id = 1,
+            Id = 5,
             FirstName = "Mark",
             LastName = "Til",
             Gender = Gender.Male,
@@ -23,7 +23,7 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
         },
         new Patient
         {
-            Id = 2,
+            Id = 6,
             FirstName = "Jeny",
             LastName = "Doe",
             Gender = Gender.Female,
@@ -31,6 +31,6 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
             Email = "Jeny.doe@example.com",
             PhoneNumber = "0987654321"
         }
-    );        
+    );
     }
 }
