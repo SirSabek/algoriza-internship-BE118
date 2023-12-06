@@ -4,6 +4,6 @@ public class AddDoctorDto : BaseDoctorDto
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    //public byte[] Image { get; set; } = new byte[0];
+    public string Password { get; set; }
     public int SpecializationId { get; set; }
 }

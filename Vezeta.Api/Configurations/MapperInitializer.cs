@@ -1,4 +1,5 @@
 using AutoMapper;
+using Vezeta.Contract.Dtos.Auth;
 using Vezeta.Contract.Dtos.BookingDtos;
 using Vezeta.Contract.Dtos.Doctor;
 using Vezeta.Contract.Dtos.Patient;
@@ -24,6 +25,9 @@ public class MapperInitializer : Profile
 
         CreateMap<Booking, GetBookingDto>().ReverseMap();
         CreateMap<Booking, AddBookingDto>().ReverseMap();
+        CreateMap<User, UserDTO>().ReverseMap();
+        CreateMap<Patient, UserDTO>().ReverseMap();
+
 
 
     }
