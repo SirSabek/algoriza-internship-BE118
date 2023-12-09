@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Vezeta.Api.Common.Errors;
 using Vezeta.Api.Configurations;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddApplication()
         .AddInfrastructure(builder.Configuration);
+        
     builder.Services.AddControllers();
     builder.Services.AddSingleton<ProblemDetailsFactory, VezetaProblemDetailsFactory>();
     builder.Services.AddSwaggerGen(c =>
@@ -33,6 +35,8 @@ var app = builder.Build();
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
     app.MapControllers();
