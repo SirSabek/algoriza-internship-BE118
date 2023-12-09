@@ -63,6 +63,18 @@ public class Repository<T> : IRepository<T> where T : class
         return await query.AsNoTracking().ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
     }
 
+    public async Task<IPagedList<T>> GetPagedList(RequestParams requestParams, int id, List<string> includes = null)
+    {
+        var query = _db.AsQueryable();
+
+        if (includes != null)
+        {
+            query = includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+        }
+
+        return await query.AsNoTracking().Where(x => x.GetType().GetProperty("Id").GetValue(x).Equals(id)).ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
+    }
+
     public async Task Insert(T entity)
     {
        await _db.AddAsync(entity);
