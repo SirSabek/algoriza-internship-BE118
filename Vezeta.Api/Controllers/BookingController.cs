@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vezeta.Application.Common;
 using Vezeta.Application.Common.Interfaces.Persistance;
@@ -7,9 +9,9 @@ using Vezeta.Domain.Entities;
 
 namespace Vezeta.Api.Controllers;
 
+//[Authorize(Roles = "Patient, Doctor, Admin")]
 [ApiController]
 [Route("booking")]
-
 public class BookingController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -29,11 +31,21 @@ public class BookingController : ControllerBase
         return Ok(result);
     }
 
-    // update this to capture the doctor id from the token
+
     [HttpGet("doctor/{id:int}")]
-    public async Task<IActionResult> GetDoctorBookings(int id)
+    public async Task<IActionResult> GetDoctorBookings([FromQuery] RequestParams requestParams)
     {
-        var bookings = await _unitOfWork.Bookings.GetAll(q=> q.DoctorId == id, orderBy: q => q.OrderByDescending(q => q.Date), new List<string> { "Patient", "Doctor" });
+        var id = User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.NameIdentifier).Value;
+        var bookings = await _unitOfWork.Bookings.GetPagedList(requestParams, Convert.ToInt32(id), new List<string> { "Patient", "Doctor" });
+        var result = _mapper.Map<List<GetBookingDto>>(bookings);
+        return Ok(result);
+    }
+
+    [HttpGet("patient/{id:int}")]
+    public async Task<IActionResult> GetPatientBookings([FromQuery] RequestParams requestParams)
+    {
+        var id = User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.NameIdentifier).Value;
+        var bookings = await _unitOfWork.Bookings.GetPagedList(requestParams, Convert.ToInt32(id), new List<string> { "Patient", "Doctor" });
         var result = _mapper.Map<List<GetBookingDto>>(bookings);
         return Ok(result);
     }
@@ -77,5 +89,13 @@ public class BookingController : ControllerBase
         await _unitOfWork.Bookings.Delete(id);
         await _unitOfWork.Save();
         return NoContent();
+    }
+
+    //get bookings count
+    [HttpGet("count")]
+    public async Task<IActionResult> GetBookingsCount()
+    {
+        var count = await _unitOfWork.Bookings.GetAll();
+        return Ok(count.Count());
     }
 }

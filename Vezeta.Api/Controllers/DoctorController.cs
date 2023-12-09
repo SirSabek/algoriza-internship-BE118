@@ -18,6 +18,8 @@ public class DoctorController : ControllerBase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly UserManager<Doctor> _userManager;
+    private readonly List<string> _allowedExtensions = new() { ".jpg", ".png", ".jpeg" };
+    private long _fileSizeLimit = 1024 * 1024 * 5; //5MB
 
     public DoctorController(IUnitOfWork unitOfWork, IMapper mapper, UserManager<Doctor> userManager)
     {
@@ -31,6 +33,7 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> GetDoctors([FromQuery] RequestParams requestParams)
     {
         var doctors = await _unitOfWork.Doctors.GetPagedList(requestParams, new List<string> { "Specialization" });
+            
         var result = _mapper.Map<List<GetDoctorDto>>(doctors);
         return Ok(result);
     }
@@ -44,21 +47,37 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPost("AddDoctor")]
-    public async Task<IActionResult> AddDoctor([FromBody] AddDoctorDto doctorDto)
+    public async Task<IActionResult> AddDoctor([FromForm] AddDoctorDto doctorDto)
     {
+        if (!IsSuitableImage(doctorDto.Image))
+        {
+            return BadRequest("Image can't be more than 5MB or not a 'jpg', 'png', 'jpeg'");
+        }
+
+        using var dataStream = new MemoryStream();
+
+        await doctorDto.Image.CopyToAsync(dataStream);
+
         var doctor = _mapper.Map<Doctor>(doctorDto);
+        
+        doctor.Image = dataStream.ToArray();
+
         doctor.UserName = doctorDto.Email;
         await _userManager.CreateAsync(doctor, doctorDto.Password);
         await _unitOfWork.Save();
         return Ok(doctorDto);
     }
     
-    [Authorize(Roles = "Doctor")]
 
     [HttpPut("id:int", Name ="UpdateDoctor")]
-    public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDto doctorDto)
+    public async Task<IActionResult> UpdateDoctor([FromForm] UpdateDoctorDto doctorDto)
     {
-        //extract id from token
+        if (!IsSuitableImage(doctorDto.Image))
+        {
+            return BadRequest("Image can't be more than 5MB or not a 'jpg', 'png', 'jpeg'");
+        }
+        using var dataStream = new MemoryStream();
+        await doctorDto.Image.CopyToAsync(dataStream);
         var id = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         var doctor = await _unitOfWork.Doctors.Get(q => q.Id == Convert.ToInt32(id), new List<string> { "Specialization" });
         doctor = _mapper.Map(doctorDto, doctor);
@@ -75,4 +94,18 @@ public class DoctorController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("count")]
+    public async Task<IActionResult> GetDoctorsCount()
+    {
+        var count = await _unitOfWork.Doctors.GetAll();
+        return Ok(count.Count());
+    }
+
+    //get top 5 specialization
+    //top 10 doctors
+    private bool IsSuitableImage(IFormFile file)
+    {
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        return _allowedExtensions.Any(x => x == extension) && file.Length < _fileSizeLimit;
+    }
 }
