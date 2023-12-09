@@ -24,12 +24,6 @@ public class AdminController : ControllerBase
 
     //Dashboard
 
-    //NumOfDoctors
-
-    //NumOfPatients
-
-    //NumOfBookings
-
     //Top 5 Specializations
 
     //Top 10 Doctors

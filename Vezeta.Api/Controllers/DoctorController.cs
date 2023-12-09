@@ -101,8 +101,27 @@ public class DoctorController : ControllerBase
         return Ok(count.Count());
     }
 
-    //get top 5 specialization
-    //top 10 doctors
+   
+    [HttpGet("topSpecializations")]
+    public async Task<IActionResult> GetTopSpecializations()
+    {
+        var topSpecializations = await _unitOfWork.Doctors.GetTopDoctorSpecializations();
+        return Ok(topSpecializations);
+    }
+    
+    [HttpGet("topDoctors")]
+    public async Task<IActionResult> GetTopDoctors()
+    {
+        var topDoctors = await _unitOfWork.Doctors.GetTopDoctors();
+        return Ok(topDoctors);
+    }
+    
+    [HttpGet("doctorsSchedule")]
+    public async Task<IActionResult> GetAllDoctorsSchedule()
+    {
+        var doctorsSchedule = await _unitOfWork.Doctors.GetAllDoctorsSchedule();
+        return Ok(doctorsSchedule);
+    }
     private bool IsSuitableImage(IFormFile file)
     {
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();

@@ -9,7 +9,7 @@ namespace Vezeta.Infrastructure.Repositories.Persistance;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    private readonly VezetaDbContext _context;
+    protected readonly VezetaDbContext _context;
     private readonly DbSet<T> _db;
     public Repository(VezetaDbContext context)
     {

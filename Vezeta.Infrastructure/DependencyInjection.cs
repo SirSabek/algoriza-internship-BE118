@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IUnitOfWork, UniteOfWork>();
 
         services.AddDbContext<VezetaDbContext>(options =>

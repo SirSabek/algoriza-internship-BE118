@@ -91,7 +91,6 @@ public class BookingController : ControllerBase
         return NoContent();
     }
 
-    //get bookings count
     [HttpGet("count")]
     public async Task<IActionResult> GetBookingsCount()
     {

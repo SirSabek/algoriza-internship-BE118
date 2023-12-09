@@ -7,7 +7,7 @@ namespace Vezeta.Infrastructure.Repositories.Persistance;
 public class UniteOfWork : IUnitOfWork
 {
     private readonly VezetaDbContext _context;
-    private IRepository<Doctor> _Doctors;
+    private IDoctorRepository _Doctors;
     private IRepository<Patient> _Patients;
     private IRepository<Booking> _Bookings;
     private IRepository<Invoice> _Invoices;
@@ -17,8 +17,7 @@ public class UniteOfWork : IUnitOfWork
         _context = context;
     }
 
-    public IRepository<Doctor> Doctors => _Doctors ??= new Repository<Doctor>(_context); 
-
+    public IDoctorRepository Doctors => _Doctors ??= new DoctorRepository(_context); 
     public IRepository<Patient> Patients => _Patients ??= new Repository<Patient>(_context);
     public IRepository<Booking> Bookings => _Bookings ??= new Repository<Booking>(_context);
     public IRepository<Invoice> Invoices => _Invoices ??= new Repository<Invoice>(_context);
