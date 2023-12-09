@@ -17,6 +17,7 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
                 LastName = "Doe",
                 Email = "john.doe@example.com",
                 Gender = Gender.Male,
+                Price = 100,
                 DateOfBirth = new DateTime(1980, 1, 1),
                 SpecializationId = 1
             },
@@ -27,6 +28,7 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
                 LastName = "Doe",
                 Email = "jane.doe@example.com",
                 Gender = Gender.Female,
+                Price = 200,
                 DateOfBirth = new DateTime(1985, 2, 2),
                 SpecializationId = 2
             },
@@ -37,6 +39,7 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
                 LastName = "Smith",
                 Email = "bob.smith@example.com",
                 Gender = Gender.Male,
+                Price = 200,
                 DateOfBirth = new DateTime(1990, 3, 3),
                 SpecializationId = 3
             },
@@ -47,6 +50,7 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
                 LastName = "Johnson",
                 Email = "alice.johnson@example.com",
                 Gender = Gender.Female,
+                Price = 150,
                 DateOfBirth = new DateTime(1995, 4, 4),
                 SpecializationId = 4
             }
