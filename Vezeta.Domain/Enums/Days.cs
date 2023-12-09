@@ -1,8 +1,8 @@
 namespace Vezeta.Domain.Enums;
 
-public enum WorkingDays
+public enum Day
 {
-    Saturday,
+    Saturday = 1,
     Sunday,
     Monday,
     Tuesday,
