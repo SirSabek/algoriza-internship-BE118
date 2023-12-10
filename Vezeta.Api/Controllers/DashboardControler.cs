@@ -1,6 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Vezeta.Application.Common;
 using Vezeta.Application.Common.Interfaces.Persistance;
+using Vezeta.Contract.Dtos.BookingDtos;
 
 namespace Vezeta.Api.Controllers;
 
@@ -51,5 +53,36 @@ public class DashboardController : ControllerBase
     {
         var topDoctors = await _unitOfWork.Doctors.GetTopDoctors();
         return Ok(topDoctors);
+    }
+
+    [HttpGet("bookingsByDate")]
+    public async Task<IActionResult> GetBookingsByDate([FromQuery] GetBookingByDateDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        DateTime startDate;
+        switch (request.Date)
+        {
+            case "last24Hours":
+                startDate = DateTime.Now.AddDays(-1);
+                break;
+            case "last7Days":
+                startDate = DateTime.Now.AddDays(-7);
+                break;
+            case "last30Days":
+                startDate = DateTime.Now.AddDays(-30);
+                break;
+            case "last12Months":
+                startDate = DateTime.Now.AddMonths(-12);
+                break;
+            default:
+                return BadRequest("Invalid Date");
+        }
+
+        var bookings = await _unitOfWork.Bookings.GetAll(q => q.CreatedAt >= startDate);
+        return Ok(bookings);
     }
 }

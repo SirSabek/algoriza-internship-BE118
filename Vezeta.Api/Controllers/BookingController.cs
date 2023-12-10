@@ -78,7 +78,7 @@ public class BookingController : ControllerBase
         return Ok(bookingDto);
     }
 
-    [HttpPut("id:int", Name = "UpdateBooking")]
+    [HttpPut("booking/{id:int}")]
     public async Task<IActionResult> UpdateBooking(int id, [FromBody] UpdateBookingDto bookingDto)
     {
         var booking = await _unitOfWork.Bookings.Get(q => q.Id == id);
@@ -89,7 +89,7 @@ public class BookingController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("id:int", Name = "ConfirmBooking")]
+    [HttpPut("booking/confirm/{id:int}")]
     public async Task<IActionResult> ConfirmBooking(int id)
     {
         var booking = await _unitOfWork.Bookings.Get(q => q.Id == id);

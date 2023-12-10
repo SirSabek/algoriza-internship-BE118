@@ -37,7 +37,9 @@ public class MapperInitializer : Profile
   
         CreateMap<TimeSlot, TimeSlotDto>().ReverseMap();
 
-        CreateMap<Booking, GetBookingDto>().ReverseMap();
+        CreateMap<Booking, GetBookingDto>()
+        .ForMember(dest => dest.RequestDate, opt => opt.MapFrom(src => src.CreatedAt))
+        .ReverseMap();
 
         CreateMap<Booking, AddBookingDto>().ReverseMap();
 
