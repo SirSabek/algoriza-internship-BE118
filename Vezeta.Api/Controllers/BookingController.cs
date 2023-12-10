@@ -9,7 +9,6 @@ using Vezeta.Domain.Entities;
 
 namespace Vezeta.Api.Controllers;
 
-//[Authorize(Roles = "Patient, Doctor, Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class BookingController : ControllerBase
@@ -63,9 +62,16 @@ public class BookingController : ControllerBase
     public async Task<IActionResult> AddBooking([FromBody] AddBookingDto bookingDto)
     {
         var booking = _mapper.Map<Booking>(bookingDto);
-        booking.PatientId = 1; // update this to capture the patient id from the token
         booking.CreatedAt = DateTime.Now;
         booking.Status = Status.Pending;
+
+        var numberOfBookings = await _unitOfWork.Bookings.GetAll(q => q.PatientId == bookingDto.PatientId);
+       
+        if (numberOfBookings.Count() < 5)
+        {
+            return BadRequest("You can't apply8 the coupon");
+        }
+
         await _unitOfWork.Bookings.Insert(booking);
         await _unitOfWork.Save();
         
@@ -89,12 +95,5 @@ public class BookingController : ControllerBase
         await _unitOfWork.Bookings.Delete(id);
         await _unitOfWork.Save();
         return NoContent();
-    }
-
-    [HttpGet("count")]
-    public async Task<IActionResult> GetBookingsCount()
-    {
-        var count = await _unitOfWork.Bookings.GetAll();
-        return Ok(count.Count());
     }
 }

@@ -34,13 +34,4 @@ public class PatientController : ControllerBase
         var result = _mapper.Map<GetPatientDto>(patient);
         return Ok(result);
     }
-
-    //get all patient
-    [HttpGet("count")]
-    public async Task<IActionResult> GetCount()
-    {
-        var count = await _unitOfWork.Patients.GetAll();
-        return Ok(count.Count());
-    }
-    
 }

@@ -48,6 +48,11 @@ public class DoctorController : ControllerBase
     [HttpPost("AddDoctor")]
     public async Task<IActionResult> AddDoctor([FromForm] AddDoctorDto doctorDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         if (!IsSuitableImage(doctorDto.Image))
         {
             return BadRequest("Image can't be more than 5MB or not a 'jpg', 'png', 'jpeg'");
@@ -58,12 +63,21 @@ public class DoctorController : ControllerBase
         await doctorDto.Image.CopyToAsync(dataStream);
 
         var doctor = _mapper.Map<Doctor>(doctorDto);
-        
         doctor.Image = dataStream.ToArray();
-
         doctor.UserName = doctorDto.Email;
-        await _userManager.CreateAsync(doctor, doctorDto.Password);
-        await _unitOfWork.Save();
+
+        var result = await _userManager.CreateAsync(doctor, doctorDto.Password);
+
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
+            return BadRequest(ModelState);
+        }
+        await _userManager.AddToRoleAsync(doctor, "Doctor");
         return Ok(doctorDto);
     }
     
@@ -93,28 +107,6 @@ public class DoctorController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("count")]
-    public async Task<IActionResult> GetDoctorsCount()
-    {
-        var count = await _unitOfWork.Doctors.GetAll();
-        return Ok(count.Count());
-    }
-
-   
-    [HttpGet("topSpecializations")]
-    public async Task<IActionResult> GetTopSpecializations()
-    {
-        var topSpecializations = await _unitOfWork.Doctors.GetTopDoctorSpecializations();
-        return Ok(topSpecializations);
-    }
-    
-    [HttpGet("topDoctors")]
-    public async Task<IActionResult> GetTopDoctors()
-    {
-        var topDoctors = await _unitOfWork.Doctors.GetTopDoctors();
-        return Ok(topDoctors);
-    }
-    
     [HttpGet("doctorsSchedule")]
     public async Task<IActionResult> GetAllDoctorsSchedule()
     {
