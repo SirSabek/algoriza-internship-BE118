@@ -32,19 +32,18 @@ public class BookingController : ControllerBase
 
 
     [HttpGet("doctor/{id:int}")]
-    public async Task<IActionResult> GetDoctorBookings([FromQuery] RequestParams requestParams)
-    {
-        var id = User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.NameIdentifier).Value;
-        var bookings = await _unitOfWork.Bookings.GetPagedList(requestParams, Convert.ToInt32(id), new List<string> { "Patient", "Doctor" });
+    public async Task<IActionResult> GetDoctorBookings([FromQuery] RequestParams requestParams, int id)
+    {   
+        var bookings = await _unitOfWork.Bookings.GetPagedList(requestParams, id, "DoctorId", new List<string> { "Patient", "Doctor" });
         var result = _mapper.Map<List<GetBookingDto>>(bookings);
         return Ok(result);
     }
 
     [HttpGet("patient/{id:int}")]
-    public async Task<IActionResult> GetPatientBookings([FromQuery] RequestParams requestParams)
+    public async Task<IActionResult> GetPatientBookings([FromQuery] RequestParams requestParams, int id)
     {
-        var id = User.Claims.FirstOrDefault(q => q.Type == ClaimTypes.NameIdentifier).Value;
-        var bookings = await _unitOfWork.Bookings.GetPagedList(requestParams, Convert.ToInt32(id), new List<string> { "Patient", "Doctor" });
+       
+        var bookings = await _unitOfWork.Bookings.GetPagedList(requestParams, id, "PatientId", new List<string> { "Patient", "Doctor" });
         var result = _mapper.Map<List<GetBookingDto>>(bookings);
         return Ok(result);
     }

@@ -63,7 +63,7 @@ public class Repository<T> : IRepository<T> where T : class
         return await query.AsNoTracking().ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
     }
 
-    public async Task<IPagedList<T>> GetPagedList(RequestParams requestParams, int id, List<string> includes = null)
+    public async Task<IPagedList<T>> GetPagedList(RequestParams requestParams, int id, string userId, List<string> includes = null)
     {
         var query = _db.AsQueryable();
 
@@ -72,7 +72,20 @@ public class Repository<T> : IRepository<T> where T : class
             query = includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }
 
-        return await query.AsNoTracking().Where(x => x.GetType().GetProperty("Id").GetValue(x).Equals(id)).ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
+
+        // check if the user is a doctor or a patient
+        if (userId.Contains("Doctor"))
+        {
+            query = query.Where(q => EF.Property<int>(q, "DoctorId") == id);
+        }
+        else
+        {
+            query = query.Where(q => EF.Property<int>(q, "PatientId") == id);
+        }
+
+        return await query.AsNoTracking().ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
+       
+
     }
 
     public async Task Insert(T entity)

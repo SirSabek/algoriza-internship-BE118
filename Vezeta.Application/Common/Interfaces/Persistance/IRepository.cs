@@ -12,7 +12,7 @@ public interface IRepository<T> where T : class
                );
 
     Task<IPagedList<T>> GetPagedList(RequestParams requestParams, List<string> includes = null);
-    Task<IPagedList<T>> GetPagedList(RequestParams requestParams, int id, List<string> includes = null);
+    Task<IPagedList<T>> GetPagedList(RequestParams requestParams, int id, string userId, List<string> includes = null);
 
     Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null);
     Task Insert(T entity);
