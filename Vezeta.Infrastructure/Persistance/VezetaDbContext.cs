@@ -38,4 +38,5 @@ public class VezetaDbContext: IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Specialization> Specializations { get; set; } = null!;
     public DbSet<Booking> Bookings { get; set; } = null!;
     public DbSet<Invoice> Invoices { get; set; } = null!;
+    public DbSet<Coupon> Coupons { get; set; } = null!;
 }
