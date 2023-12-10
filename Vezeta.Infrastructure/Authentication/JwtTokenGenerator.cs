@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Vezeta.Application.Common.Interfaces.Authentication;
@@ -13,6 +14,7 @@ namespace Vezeta.Infrastructure.Authentication
     {
         private readonly JwtSettings _jwtSettings;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly UserManager<User> _userManager;
 
         public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JwtSettings> jwtOptions)
         {
@@ -26,14 +28,20 @@ namespace Vezeta.Infrastructure.Authentication
                 new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(_jwtSettings.Secret)), 
                 SecurityAlgorithms.HmacSha256);
-            
+
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, $"{user.FirstName}"),
                 new Claim(JwtRegisteredClaimNames.FamilyName, $"{user.LastName}"),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+
+            // var roles = _userManager.GetRolesAsync(user);
+            // foreach (var role in roles.Result)
+            // {
+            //     claims.Add(new Claim(ClaimTypes.Role, role));
+            // }
 
             var securityToken = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
@@ -44,7 +52,6 @@ namespace Vezeta.Infrastructure.Authentication
             );
 
             return new JwtSecurityTokenHandler().WriteToken(securityToken);
-
         }
     }
 
