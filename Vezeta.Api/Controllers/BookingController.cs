@@ -11,7 +11,7 @@ namespace Vezeta.Api.Controllers;
 
 //[Authorize(Roles = "Patient, Doctor, Admin")]
 [ApiController]
-[Route("booking")]
+[Route("api/[controller]")]
 public class BookingController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;

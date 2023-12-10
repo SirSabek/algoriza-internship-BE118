@@ -11,8 +11,7 @@ using Vezeta.Domain.Entities;
 namespace Vezeta.Api.Controllers;
 
 [ApiController]
-[Route("doctor")]
-
+[Route("api/[controller]")]
 public class DoctorController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;

@@ -8,7 +8,7 @@ namespace Vezeta.Api.Controllers;
 
 
 [ApiController]
-[Route("admin")]
+[Route("api/[controller]")]
 public class AdminController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vezeta.Application.Common.Interfaces.Persistance;
@@ -9,6 +10,8 @@ using Vezeta.Domain.Entities;
 namespace Vezeta.Api.Controllers;
 
 [ApiController]
+[Route("api/[controller]")]
+[AllowAnonymous]
 public class AccountController : ControllerBase
 {
    

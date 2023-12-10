@@ -7,8 +7,7 @@ using Vezeta.Contract.Dtos.Patient;
 namespace Vezeta.Api.Controllers;
 
 [ApiController]
-[Route("patient")]
-
+[Route("api/[controller]")]
 public class PatientController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
