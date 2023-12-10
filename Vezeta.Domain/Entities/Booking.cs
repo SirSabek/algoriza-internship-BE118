@@ -20,5 +20,6 @@ public class Booking
     public DateTime UpdatedAt { get; set; }
     public Status Status { get; set; }
     public bool IsConfirmed { get; set; } = false;
-    public string Coupon { get; set; }
+    public string? Coupon { get; set; } = null;
+
 }

@@ -23,14 +23,14 @@ public class InvoiceConTroller : ControllerBase
     [HttpGet("invoices")]
     public async Task<IActionResult> GetInvoices()
     {
-        var invoices = await _unitOfWork.Invoices.GetAll();
+        var invoices = await _unitOfWork.Invoices.GetAll(includes: new(){"Booking"});
         return Ok(invoices);
     }
 
     [HttpGet("invoice/{id:int}")]
     public async Task<IActionResult> GetInvoice(int id)
     {
-        var invoice = await _unitOfWork.Invoices.Get(q => q.Id == id);
+        var invoice = await _unitOfWork.Invoices.Get(q => q.Id == id, includes: new(){"Booking"});
         return Ok(invoice);
     }
 
@@ -42,7 +42,7 @@ public class InvoiceConTroller : ControllerBase
         invoice.TotalPrice = totalPrice;
         await _unitOfWork.Invoices.Insert(invoice);
         await _unitOfWork.Save();
-        return Ok(invoice);
+        return Ok(new{invoice.Id, invoice.BookingId, invoice.TotalPrice});
     }
 
     private async Task<int> CalculateTotalPrice(int bookingId)

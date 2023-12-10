@@ -1,14 +1,16 @@
 @host = http://localhost:5169
-POST {{host}}/auth/register
+POST {{host}}/Account/register
+
 Content-Type: application/json
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
 
 {
-    "FirstName": "Admin2",
-    "LastName": "Admin",
-    "email": "admin@localhost",
-    "password": "admin"
+  "firstName": "string",
+  "lastName": "string",
+  "phoneNember": "string",
+  "email": "user@example.com",
+  "password": "string",
+  "confirmPassword": "string",
+  "gender": 0,
+  "dateOfBirth": "2023-12-10T01:02:44.361Z"
 }
 

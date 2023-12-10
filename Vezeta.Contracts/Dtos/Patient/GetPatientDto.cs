@@ -12,6 +12,6 @@ namespace Vezeta.Contract.Dtos.Patient
         public Gender Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-        public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+        //public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

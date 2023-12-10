@@ -22,8 +22,8 @@ public class PatientController : ControllerBase
     [HttpGet("patients")]
     public async Task<IActionResult> GetPatients([FromQuery] RequestParams requestParams)
     {
-        var patients = await _unitOfWork.Patients.GetPagedList(requestParams, new List<string> { "Bookings","Invoices" });
-        var result = _mapper.Map<List<GetPatientDto>>(patients);
+        var patients = await _unitOfWork.Patients.GetPagedList(requestParams, new List<string> {"Bookings" });
+        var result = _mapper.Map<List<GetPatientDto>>(patients); 
         return Ok(result);
     }
 

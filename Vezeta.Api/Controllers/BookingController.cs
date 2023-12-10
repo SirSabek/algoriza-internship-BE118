@@ -67,9 +67,9 @@ public class BookingController : ControllerBase
 
         var numberOfBookings = await _unitOfWork.Bookings.GetAll(q => q.PatientId == bookingDto.PatientId);
        
-        if (numberOfBookings.Count() < 5)
+        if (numberOfBookings.Count() < 5 && bookingDto.Coupon is not null)
         {
-            return BadRequest("You can't apply8 the coupon");
+            return BadRequest("You can't apply the coupon");
         }
 
         await _unitOfWork.Bookings.Insert(booking);
@@ -84,6 +84,17 @@ public class BookingController : ControllerBase
         var booking = await _unitOfWork.Bookings.Get(q => q.Id == id);
         booking = _mapper.Map(bookingDto, booking);
         booking.UpdatedAt = DateTime.Now;
+        _unitOfWork.Bookings.Update(booking);
+        await _unitOfWork.Save();
+        return NoContent();
+    }
+
+    [HttpPut("id:int", Name = "ConfirmBooking")]
+    public async Task<IActionResult> ConfirmBooking(int id)
+    {
+        var booking = await _unitOfWork.Bookings.Get(q => q.Id == id);
+        booking.UpdatedAt = DateTime.Now;
+        booking.Status = Status.Confirmed;
         _unitOfWork.Bookings.Update(booking);
         await _unitOfWork.Save();
         return NoContent();

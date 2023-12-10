@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Vezeta.Api.Common.Errors;
@@ -11,6 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
         .AddApplication()
         .AddInfrastructure(builder.Configuration);
         
+
+    builder.Services.AddControllers().AddJsonOptions(x =>
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+
     builder.Services.AddControllers();
     builder.Services.AddSingleton<ProblemDetailsFactory, VezetaProblemDetailsFactory>();
     builder.Services.AddSwaggerGen(opt =>

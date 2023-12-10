@@ -6,6 +6,6 @@ namespace Vezeta.Contract.Dtos.BookingDtos
         public int PatientId { get; set; }
         public int ScheduleDayId { get; set; }
         public int TimeSlotId { get; set; }
-        public string Coupon { get; set; }
+        public string? Coupon { get; set; } = null;
     }
 }
